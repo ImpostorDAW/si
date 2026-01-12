@@ -1,15 +1,18 @@
-<script setup>
-defineProps({
-  votado: Object,
-});
-
-defineEmits(['volverVotar']);
+<script>
+export default {
+  props: ['jugadores', 'votadoIndex'],
+  methods: {
+    volverVotar() {
+      this.$emit('volverVotar');
+    },
+  },
+};
 </script>
 
 <template>
   <div class="seccion">
     <div class="panelResultado resultadoFallo">
-      <h2>No es {{ votado?.nombre }}</h2>
+      <h2>No es {{ jugadores[votadoIndex] }}</h2>
       <p>Sigue intentando...</p>
     </div>
     <button class="boton botonJugador botonAncho" @click="$emit('volverVotar')">

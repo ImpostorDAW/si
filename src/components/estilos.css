@@ -302,7 +302,7 @@ select:focus {
   font-size: 2.2em;
   font-weight: bold;
   color: var(--primario);
-  margin: 0.5em 0; 
+  margin: 0.5em 0;  
 }
 .palabraImpostor {
   font-size: 1.2em;

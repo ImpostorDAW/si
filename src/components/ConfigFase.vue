@@ -1,29 +1,53 @@
-<script setup>
-import { computed } from 'vue';
+<script>
 import { listaCategorias } from '../data/palabras.js';
 
-const props = defineProps([
-  'jugadores',
-  'editIndex',
-  'nombreInput',
-  'mostrarPista',
-  'mostrarCategoria',
-  'categoriaId',
-]);
-const emit = defineEmits([
-  'update:nombreInput',
-  'update:mostrarPista',
-  'update:mostrarCategoria',
-  'update:categoriaId',
-  'agregar',
-  'eliminar',
-  'editar',
-  'guardarEdicion',
-  'cancelarEdicion',
-  'empezar',
-]);
-
-const categorias = computed(() => listaCategorias());
+export default {
+  props: [
+    'jugadores',
+    'editIndex',
+    'nombreInput',
+    'mostrarPista',
+    'mostrarCategoria',
+    'categoriaId',
+  ],
+  data() {
+    return {
+      categorias: listaCategorias(),
+    };
+  },
+  methods: {
+    updateNombreInput(valor) {
+      this.$emit('update:nombreInput', valor);
+    },
+    updateMostrarPista(valor) {
+      this.$emit('update:mostrarPista', valor);
+    },
+    updateMostrarCategoria(valor) {
+      this.$emit('update:mostrarCategoria', valor);
+    },
+    updateCategoriaId(valor) {
+      this.$emit('update:categoriaId', valor);
+    },
+    agregar() {
+      this.$emit('agregar');
+    },
+    eliminar(i) {
+      this.$emit('eliminar', i);
+    },
+    editar(i) {
+      this.$emit('editar', i);
+    },
+    guardarEdicion() {
+      this.$emit('guardarEdicion');
+    },
+    cancelarEdicion() {
+      this.$emit('cancelarEdicion');
+    },
+    empezar() {
+      this.$emit('empezar');
+    },
+  },
+};
 </script>
 
 <template>
@@ -33,30 +57,28 @@ const categorias = computed(() => listaCategorias());
     <div class="grupoInput">
       <input
         :value="nombreInput"
-        @input="emit('update:nombreInput', $event.target.value)"
+        @input="updateNombreInput($event.target.value)"
         :placeholder="
           editIndex !== null ? 'Editar nombre' : 'Nombre del jugador'
         "
-        @keyup.enter="
-          editIndex !== null ? emit('guardarEdicion') : emit('agregar')
-        "
+        @keyup.enter="editIndex !== null ? guardarEdicion() : agregar()"
       />
       <template v-if="editIndex !== null">
         <button
           class="boton"
-          @click="emit('guardarEdicion')"
+          @click="guardarEdicion()"
           :disabled="!nombreInput?.trim()"
         >
           Guardar
         </button>
-        <button class="boton botonCancelar" @click="emit('cancelarEdicion')">
+        <button class="boton botonCancelar" @click="cancelarEdicion()">
           Cancelar
         </button>
       </template>
       <button
         v-else
         class="boton"
-        @click="emit('agregar')"
+        @click="agregar()"
         :disabled="!nombreInput?.trim()"
       >
         Agregar
@@ -68,16 +90,10 @@ const categorias = computed(() => listaCategorias());
       <div v-for="(j, i) in jugadores" :key="i" class="jugadorItem">
         <span>{{ j }}</span>
         <div class="botonesAccion">
-          <button
-            class="boton botonPequeno botonJugador"
-            @click="emit('editar', i)"
-          >
+          <button class="boton botonPequeno botonJugador" @click="editar(i)">
             Editar
           </button>
-          <button
-            class="boton botonPequeno botonEliminar"
-            @click="emit('eliminar', i)"
-          >
+          <button class="boton botonPequeno botonEliminar" @click="eliminar(i)">
             Eliminar
           </button>
         </div>
@@ -93,7 +109,7 @@ const categorias = computed(() => listaCategorias());
             <input
               type="checkbox"
               :checked="mostrarPista"
-              @change="emit('update:mostrarPista', $event.target.checked)"
+              @change="updateMostrarPista($event.target.checked)"
             />
             Mostrar pista
           </label>
@@ -101,7 +117,7 @@ const categorias = computed(() => listaCategorias());
             <input
               type="checkbox"
               :checked="mostrarCategoria"
-              @change="emit('update:mostrarCategoria', $event.target.checked)"
+              @change="updateMostrarCategoria($event.target.checked)"
             />
             Mostrar categoria
           </label>
@@ -112,7 +128,7 @@ const categorias = computed(() => listaCategorias());
         <select
           id="cat"
           :value="categoriaId"
-          @change="emit('update:categoriaId', $event.target.value)"
+          @change="updateCategoriaId($event.target.value)"
         >
           <option value="">Todas (aleatorio)</option>
           <option v-for="c in categorias" :key="c.id" :value="c.id">
@@ -124,7 +140,7 @@ const categorias = computed(() => listaCategorias());
 
     <button
       class="boton botonEmpezar botonGrande botonAncho"
-      @click="emit('empezar')"
+      @click="empezar()"
       :disabled="jugadores.length < 3"
     >
       Empezar (min. 3 jugadores)

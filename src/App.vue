@@ -1,118 +1,120 @@
-<script setup>
-import { computed, ref } from 'vue';
-import './components/estilos.css';
-import { palabraAleatoria } from './data/palabras.js';
-
+<script>
 import ConfigFase from './components/ConfigFase.vue';
+import './components/estilos.css';
 import FalloFase from './components/FalloFase.vue';
 import FinFase from './components/FinFase.vue';
 import JuegoFase from './components/JuegoFase.vue';
 import RolesFase from './components/RolesFase.vue';
 import VotacionFase from './components/VotacionFase.vue';
+import { palabraAleatoria } from './data/palabras.js';
 
-const fase = ref('config');
-const jugadores = ref([]);
-const nombreInput = ref('');
-const editIndex = ref(null);
-const mostrarPista = ref(true);
-const mostrarCategoria = ref(true);
-const categoriaId = ref('');
-
-const datosPartida = ref({
-  palabra: null,
-  jugadores: [],
-  orden: [],
-  horario: true,
-});
-const indiceActual = ref(0);
-const viendoRol = ref(null);
-const votado = ref(null);
-
-const jugadorActual = computed(
-  () => datosPartida.value.jugadores[indiceActual.value]
-);
-const todosVieron = computed(
-  () => indiceActual.value >= datosPartida.value.jugadores.length
-);
-
-const agregarJugador = () => {
-  const nombre = nombreInput.value.trim();
-  if (nombre && !jugadores.value.includes(nombre)) {
-    jugadores.value.push(nombre);
-    nombreInput.value = '';
-  }
-};
-
-const eliminar = i => jugadores.value.splice(i, 1);
-
-const editar = i => {
-  editIndex.value = i;
-  nombreInput.value = jugadores.value[i];
-};
-
-const guardarEdicion = () => {
-  if (nombreInput.value.trim() && editIndex.value !== null) {
-    jugadores.value[editIndex.value] = nombreInput.value.trim();
-    cancelarEdicion();
-  }
-};
-
-const cancelarEdicion = () => {
-  editIndex.value = null;
-  nombreInput.value = '';
-};
-
-const empezar = () => {
-  if (jugadores.value.length < 3) return;
-
-  const impostorIndex = Math.floor(Math.random() * jugadores.value.length);
-  const listaJugadores = [];
-  for (let i = 0; i < jugadores.value.length; i++) {
-    listaJugadores.push({
-      nombre: jugadores.value[i],
-      esImpostor: i === impostorIndex,
-      vioRol: false,
-    });
-  }
-
-  const ordenAleatorio = jugadores.value.slice();
-  ordenAleatorio.sort(() => Math.random() - 0.5);
-
-  datosPartida.value = {
-    palabra: palabraAleatoria(categoriaId.value || null),
-    jugadores: listaJugadores,
-    orden: ordenAleatorio,
-    horario: Math.random() < 0.5,
-  };
-  indiceActual.value = 0;
-  fase.value = 'roles';
-};
-
-const verRol = () => (viendoRol.value = jugadorActual.value);
-
-const siguienteJugador = () => {
-  if (viendoRol.value) viendoRol.value.vioRol = true;
-  viendoRol.value = null;
-  indiceActual.value++;
-  if (todosVieron.value) fase.value = 'juego';
-};
-
-const votar = jugador => {
-  votado.value = jugador;
-  fase.value = jugador.esImpostor ? 'fin' : 'fallo';
-};
-
-const reiniciar = () => {
-  fase.value = 'config';
-  datosPartida.value = {
-    palabra: null,
-    jugadores: [],
-    orden: [],
-    horario: true,
-  };
-  viendoRol.value = null;
-  indiceActual.value = 0;
-  votado.value = null;
+export default {
+  components: {
+    ConfigFase,
+    FalloFase,
+    FinFase,
+    JuegoFase,
+    RolesFase,
+    VotacionFase,
+  },
+  data() {
+    return {
+      fase: 'config',
+      jugadores: this.cargarJugadores(),
+      nombreInput: '',
+      editIndex: null,
+      mostrarPista: true,
+      mostrarCategoria: true,
+      categoriaId: '',
+      palabra: '',
+      orden: [],
+      horario: true,
+      impostorIndex: null,
+      viendoRol: null,
+      indiceActual: 0,
+      votadoIndex: null,
+    };
+  },
+  methods: {
+    cargarJugadores() {
+      const guardados = localStorage.getItem('jugadores');
+      return guardados ? JSON.parse(guardados) : [];
+    },
+    guardarJugadores() {
+      localStorage.setItem('jugadores', JSON.stringify(this.jugadores));
+    },
+    agregarJugador() {
+      const nombre = this.nombreInput.trim();
+      if (nombre && !this.jugadores.includes(nombre)) {
+        this.jugadores.push(nombre);
+        this.nombreInput = '';
+        this.guardarJugadores();
+      }
+    },
+    eliminar(i) {
+      this.jugadores.splice(i, 1);
+      this.guardarJugadores();
+    },
+    editar(i) {
+      this.editIndex = i;
+      this.nombreInput = this.jugadores[i];
+    },
+    guardarEdicion() {
+      if (this.nombreInput.trim() && this.editIndex !== null) {
+        this.jugadores[this.editIndex] = this.nombreInput.trim();
+        this.cancelarEdicion();
+        this.guardarJugadores();
+      }
+    },
+    cancelarEdicion() {
+      this.editIndex = null;
+      this.nombreInput = '';
+    },
+    empezar() {
+      if (this.jugadores.length < 3) return;
+      this.impostorIndex = Math.floor(Math.random() * this.jugadores.length);
+      this.orden = this.jugadores.slice();
+      this.orden.sort(() => Math.random() - 0.5);
+      this.palabra = palabraAleatoria(this.categoriaId || null);
+      this.horario = Math.random() < 0.5;
+      this.indiceActual = 0;
+      this.viendoRol = null;
+      this.votadoIndex = null;
+      this.fase = 'roles';
+    },
+    verRol() {
+      this.viendoRol = this.indiceActual;
+    },
+    siguienteJugador() {
+      this.viendoRol = null;
+      this.indiceActual++;
+      if (this.indiceActual >= this.jugadores.length) {
+        this.fase = 'juego';
+      }
+    },
+    votar(i) {
+      this.votadoIndex = i;
+      this.fase = i === this.impostorIndex ? 'fin' : 'fallo';
+    },
+    reiniciar() {
+      this.fase = 'config';
+      this.palabra = '';
+      this.orden = [];
+      this.horario = true;
+      this.impostorIndex = null;
+      this.viendoRol = null;
+      this.indiceActual = 0;
+      this.votadoIndex = null;
+    },
+  },
+  watch: {
+    jugadores: {
+      handler() {
+        this.guardarJugadores();
+      },
+      deep: true,
+    },
+  },
 };
 </script>
 
@@ -142,10 +144,11 @@ const reiniciar = () => {
 
     <RolesFase
       v-if="fase === 'roles'"
-      :datosPartida="datosPartida"
+      :jugadores="jugadores"
       :indiceActual="indiceActual"
-      :jugadorActual="jugadorActual"
       :viendoRol="viendoRol"
+      :impostorIndex="impostorIndex"
+      :palabra="palabra"
       :mostrarPista="mostrarPista"
       :mostrarCategoria="mostrarCategoria"
       @verRol="verRol"
@@ -154,26 +157,32 @@ const reiniciar = () => {
 
     <JuegoFase
       v-if="fase === 'juego'"
-      :datosPartida="datosPartida"
+      :orden="orden"
+      :horario="horario"
+      :palabra="palabra"
+      :impostorIndex="impostorIndex"
       @votar="fase = 'votacion'"
     />
 
     <VotacionFase
       v-if="fase === 'votacion'"
-      :jugadores="datosPartida.jugadores"
+      :jugadores="jugadores"
+      :impostorIndex="impostorIndex"
       @votar="votar"
     />
 
     <FalloFase
       v-if="fase === 'fallo'"
-      :votado="votado"
+      :jugadores="jugadores"
+      :votadoIndex="votadoIndex"
       @volverVotar="fase = 'votacion'"
     />
 
     <FinFase
       v-if="fase === 'fin'"
-      :votado="votado"
-      :datosPartida="datosPartida"
+      :jugadores="jugadores"
+      :votadoIndex="votadoIndex"
+      :palabra="palabra"
       @reiniciar="reiniciar"
     />
   </div>

@@ -1,9 +1,12 @@
-<script setup>
-const props = defineProps({
-  jugadores: Array,
-  jugadoresBloqueados: Array,
-});
-defineEmits(['votar']);
+<script>
+export default {
+  props: ['jugadores', 'impostorIndex'],
+  methods: {
+    votar(i) {
+      this.$emit('votar', i);
+    },
+  },
+};
 </script>
 
 <template>
@@ -11,15 +14,12 @@ defineEmits(['votar']);
     <h2>Quien es el impostor?</h2>
     <div class="listaVotacion">
       <button
-        v-for="j in jugadores"
-        :key="j.nombre"
+        v-for="(j, i) in jugadores"
+        :key="j"
         class="boton botonJugador botonGrande"
-        :disabled="
-          jugadoresBloqueados && jugadoresBloqueados.includes(j.nombre)
-        "
-        @click="$emit('votar', j)"
+        @click="votar(i)"
       >
-        {{ j.nombre }}
+        {{ j }}
       </button>
     </div>
   </div>

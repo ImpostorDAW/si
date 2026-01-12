@@ -1,9 +1,12 @@
-<script setup>
-defineProps({
-  datosPartida: Object,
-});
-
-defineEmits(['votar']);
+<script>
+export default {
+  props: ['orden', 'horario', 'palabra', 'impostorIndex'],
+  methods: {
+    votar() {
+      this.$emit('votar');
+    },
+  },
+};
 </script>
 
 <template>
@@ -11,10 +14,10 @@ defineEmits(['votar']);
     <h2>A jugar</h2>
     <p>Describan la palabra por turnos.</p>
     <div class="panelInfo">
-      <p><strong>Orden:</strong> {{ datosPartida.orden.join(' - ') }}</p>
+      <p><strong>Orden:</strong> {{ orden.join(' - ') }}</p>
       <p>
         <strong>Sentido:</strong>
-        {{ datosPartida.horario ? 'Horario' : 'Antihorario' }}
+        {{ horario ? 'Horario' : 'Antihorario' }}
       </p>
       <hr />
       <p>
