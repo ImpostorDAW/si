@@ -5,6 +5,7 @@ import FalloFase from './components/FalloFase.vue';
 import FinFase from './components/FinFase.vue';
 import JuegoFase from './components/JuegoFase.vue';
 import RolesFase from './components/RolesFase.vue';
+import VictoriaImpostor from './components/VictoriaImpostor.vue';
 import VotacionFase from './components/VotacionFase.vue';
 import { palabraAleatoria } from './data/palabras.js';
 
@@ -16,6 +17,7 @@ export default {
     JuegoFase,
     RolesFase,
     VotacionFase,
+    VictoriaImpostor,
   },
   data() {
     return {
@@ -33,6 +35,7 @@ export default {
       viendoRol: null,
       indiceActual: 0,
       votadoIndex: null,
+      votados: [],
     };
   },
   methods: {
@@ -93,8 +96,16 @@ export default {
       }
     },
     votar(i) {
+      if (i !== this.impostorIndex && this.votados.includes(i)) return;
       this.votadoIndex = i;
-      this.fase = i === this.impostorIndex ? 'fin' : 'fallo';
+      if (i !== this.impostorIndex) {
+        this.votados.push(i);
+      }
+      if (this.jugadores.length - this.votados.length === 2) {
+        this.fase = 'victoriaImpostor';
+      } else {
+        this.fase = i === this.impostorIndex ? 'fin' : 'fallo';
+      }
     },
     reiniciar() {
       this.fase = 'config';
@@ -105,6 +116,7 @@ export default {
       this.viendoRol = null;
       this.indiceActual = 0;
       this.votadoIndex = null;
+      this.votados = [];
     },
   },
   watch: {
@@ -168,6 +180,7 @@ export default {
       v-if="fase === 'votacion'"
       :jugadores="jugadores"
       :impostorIndex="impostorIndex"
+      :votados="votados"
       @votar="votar"
     />
 
@@ -182,6 +195,13 @@ export default {
       v-if="fase === 'fin'"
       :jugadores="jugadores"
       :votadoIndex="votadoIndex"
+      :palabra="palabra"
+      @reiniciar="reiniciar"
+    />
+    <VictoriaImpostor
+      v-if="fase === 'victoriaImpostor'"
+      :jugadores="jugadores"
+      :impostorIndex="impostorIndex"
       :palabra="palabra"
       @reiniciar="reiniciar"
     />

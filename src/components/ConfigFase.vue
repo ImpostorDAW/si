@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       categorias: listaCategorias(),
+      mensajeError: '',
     };
   },
   methods: {
@@ -29,6 +30,11 @@ export default {
       this.$emit('update:categoriaId', valor);
     },
     agregar() {
+      if (this.jugadores.includes(this.nombreInput?.trim())) {
+        this.mensajeError = 'No se pueden poner dos nombres iguales.';
+        return;
+      }
+      this.mensajeError = '';
       this.$emit('agregar');
     },
     eliminar(i) {
@@ -38,6 +44,14 @@ export default {
       this.$emit('editar', i);
     },
     guardarEdicion() {
+      const nombreNuevo = this.nombreInput?.trim();
+      if (
+        this.jugadores.some((j, i) => i !== this.editIndex && j === nombreNuevo)
+      ) {
+        this.mensajeError = 'No se pueden poner dos nombres iguales.';
+        return;
+      }
+      this.mensajeError = '';
       this.$emit('guardarEdicion');
     },
     cancelarEdicion() {
@@ -55,6 +69,13 @@ export default {
     <h2>Configurar Partida</h2>
 
     <div class="grupoInput">
+      <div
+        v-if="mensajeError"
+        class="mensajeError"
+        style="color: red; margin-bottom: 8px"
+      >
+        {{ mensajeError }}
+      </div>
       <input
         :value="nombreInput"
         @input="updateNombreInput($event.target.value)"
