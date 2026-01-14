@@ -1,7 +1,7 @@
 <script>
 /**
- * componente que se muestra cuando se falla al votar a un impostor
- * muestra un mensaje de error y un boton para volver a votar
+ * componente que se muestra cuando los jugadores aciertan que un jugador es impostor
+ * pero aun quedan mas impostores por descubrir
  */
 export default {
   // atributos que recibe este componente
@@ -19,12 +19,13 @@ export default {
 
 <template>
   <div class="seccion">
-    <div class="panelResultado resultadoFallo">
-      <h2>No es {{ jugadores[votadoIndice] }}</h2>
-      <p>Sigue intentando...</p>
+    <div class="panelResultado resultadoExito">
+      <h2>¡Es impostor!</h2>
+      <p>{{ jugadores[votadoIndice] }} era impostor.</p>
+      <p>Aún quedan impostores por encontrar...</p>
     </div>
     <button class="boton botonJugador botonAncho" @click="volverVotar()">
-      Volver a votar
+      Continuar votando
     </button>
   </div>
 </template>
@@ -45,16 +46,17 @@ export default {
   color: #fff;
   margin-bottom: 1rem;
   text-align: center;
-  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
 }
 
-.resultadoFallo {
-  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+.resultadoExito {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: #222;
 }
 
 .panelResultado h2 {
   margin-bottom: 0.5rem;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
 }
 
 .boton {
