@@ -8,7 +8,6 @@
 import { listaCategorias } from '../data/palabras.js';
 
 export default {
-  // estos son los atributos que recibe el componente
   props: [
     'jugadores',
     'editIndice',
@@ -26,10 +25,6 @@ export default {
     };
   },
   computed: {
-    /**
-     * decide si mostrar la opcion de elegir numero de impostores
-     * solo se activa si hay 6 o mas jugadores
-     */
     mostrarOpcionNumImpostores() {
       return this.jugadores.length >= 6;
     },
@@ -147,7 +142,7 @@ export default {
 </script>
 
 <template>
-  <div class="seccion">
+  <div class="configFase">
     <h2>Configurar Partida</h2>
 
     <div class="grupoInput">
@@ -165,19 +160,19 @@ export default {
       />
       <template v-if="editIndice !== null">
         <button
-          class="boton"
+          class="botonGuardar"
           @click="guardarEdicion()"
           :disabled="!nombreInput?.trim()"
         >
           Guardar
         </button>
-        <button class="boton botonCancelar" @click="cancelarEdicion()">
+        <button class="botonCancelar" @click="cancelarEdicion()">
           Cancelar
         </button>
       </template>
       <button
         v-else
-        class="boton"
+        class="botonAgregar"
         @click="agregarJugador()"
         :disabled="!nombreInput?.trim()"
       >
@@ -190,16 +185,8 @@ export default {
       <div v-for="(j, i) in jugadores" :key="i" class="jugadorItem">
         <span>{{ j }}</span>
         <div class="botonesAccion">
-          <button
-            class="boton botonPequeno botonJugador"
-            @click="editarJugador(i)"
-          >
-            Editar
-          </button>
-          <button
-            class="boton botonPequeno botonEliminar"
-            @click="eliminarJugador(i)"
-          >
+          <button class="botonEditar" @click="editarJugador(i)">Editar</button>
+          <button class="botonEliminar" @click="eliminarJugador(i)">
             Eliminar
           </button>
         </div>
@@ -213,13 +200,13 @@ export default {
           <input type="checkbox" :checked="premium" @change="togglePremium" />
           <span class="slider"></span>
         </label>
-        <span class="label-text">Modo Premium</span>
+        <span class="labelText">Modo Premium</span>
       </div>
 
       <template v-if="premium">
         <div class="opcion">
           <div class="grupoToggle">
-            <label class="switch-label">
+            <label class="switchLabel">
               Mostrar pista
               <label class="switch">
                 <input
@@ -230,7 +217,7 @@ export default {
                 <span class="slider"></span>
               </label>
             </label>
-            <label class="switch-label">
+            <label class="switchLabel">
               Mostrar categoria
               <label class="switch">
                 <input
@@ -277,7 +264,7 @@ export default {
     </div>
 
     <button
-      class="boton botonEmpezar botonGrande botonAncho"
+      class="botonEmpezar"
       @click="empezarPartida()"
       :disabled="jugadores.length < 3"
     >
@@ -287,15 +274,15 @@ export default {
 </template>
 
 <style scoped>
-.seccion {
-  background: #ffffff;
+.configFase {
+  background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  color: #333333;
+  color: black;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.seccion h2 {
+.configFase h2 {
   color: #4a6fa5;
   margin-bottom: 1rem;
   font-size: 1.5rem;
@@ -316,7 +303,6 @@ select {
   font-size: 1rem;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
-  transition: border-color 0.2s;
   background: #f9f9f9;
 }
 
@@ -326,7 +312,7 @@ select:focus {
   border-color: #4a6fa5;
 }
 
-.boton {
+.botonGuardar {
   padding: 0.6rem 1.2rem;
   font-size: 1rem;
   border: none;
@@ -334,48 +320,58 @@ select:focus {
   background: #4a6fa5;
   color: white;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.boton:hover:not(:disabled) {
-  background: #3a5a80;
-  transform: translateY(-2px);
-}
-
-.boton:disabled {
-  background: #cccccc;
-  cursor: not-allowed;
-}
-
-.botonPequeno {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.875rem;
-}
-
-.botonGrande {
-  padding: 0.9rem 1.5rem;
-  font-size: 1.1rem;
-}
-
-.botonAncho {
-  width: 100%;
-  margin-top: 1rem;
-}
-
-.botonEmpezar {
-  background: #5cb85c;
-}
-
-.botonEliminar {
-  background: #d9534f;
-}
-
-.botonJugador {
-  background: #5bc0de;
 }
 
 .botonCancelar {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
   background: #f0ad4e;
+  color: white;
+  cursor: pointer;
+}
+
+.botonAgregar {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #4a6fa5;
+  color: white;
+  cursor: pointer;
+}
+
+.botonEditar {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 8px;
+  background: #5bc0de;
+  color: white;
+  cursor: pointer;
+}
+
+.botonEliminar {
+  padding: 0.4rem 0.75rem;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 8px;
+  background: #d9534f;
+  color: white;
+  cursor: pointer;
+}
+
+.botonEmpezar {
+  padding: 0.9rem 1.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: #5cb85c;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
 }
 
 .listaJugadores {
@@ -436,7 +432,7 @@ select:focus {
   gap: 0.5rem;
 }
 
-.switch-label {
+.switchLabel {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -489,7 +485,7 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-.label-text {
+.labelText {
   margin-left: 0.5rem;
   vertical-align: middle;
 }

@@ -4,12 +4,8 @@
  * muestra un mensaje de error y un boton para volver a votar
  */
 export default {
-  // atributos que recibe este componente
   props: ['jugadores', 'votadoIndice'],
   methods: {
-    /**
-     * emite un evento para volver a la pantalla de votacion
-     */
     volverVotar() {
       this.$emit('volverVotar');
     },
@@ -18,67 +14,46 @@ export default {
 </script>
 
 <template>
-  <div class="seccion">
-    <div class="panelResultado resultadoFallo">
+  <div class="falloFase">
+    <div class="mensajeFallo">
       <h2>No es {{ jugadores[votadoIndice] }}</h2>
       <p>Sigue intentando...</p>
     </div>
-    <button class="boton botonJugador botonAncho" @click="volverVotar()">
-      Volver a votar
-    </button>
+    <button class="botonVolver" @click="volverVotar()">Volver a votar</button>
   </div>
 </template>
 
 <style scoped>
-.seccion {
-  background: #ffffff;
+.falloFase {
+  background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  color: #333333;
+  color: black;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.panelResultado {
+.mensajeFallo {
   padding: 1.5rem;
   border-radius: 12px;
-  color: #fff;
+  color: white;
   margin-bottom: 1rem;
-  text-align: center;
   background: linear-gradient(135deg, #ff6b6b, #ff8e53);
 }
 
-.resultadoFallo {
-  background: linear-gradient(135deg, #ff6b6b, #ff8e53);
-}
-
-.panelResultado h2 {
+.mensajeFallo h2 {
   margin-bottom: 0.5rem;
   font-size: 1.5rem;
 }
 
-.boton {
+.botonVolver {
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
   border: none;
   border-radius: 8px;
-  background: #4a6fa5;
+  background: #5bc0de;
   color: white;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  width: 100%;
-}
-
-.boton:hover:not(:disabled) {
-  background: #3a5a80;
-  transform: translateY(-2px);
-}
-
-.botonJugador {
-  background: #5bc0de;
-}
-
-.botonAncho {
   width: 100%;
   margin-top: 1rem;
 }

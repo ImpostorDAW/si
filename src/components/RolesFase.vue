@@ -5,7 +5,6 @@
  * si es impostor o civil, con la palabra correspondiente
  */
 export default {
-  // atributos que recibe este componente
   props: [
     'jugadores',
     'indiceActual',
@@ -16,16 +15,9 @@ export default {
     'mostrarCategoria',
   ],
   methods: {
-    /**
-     * emite un evento para indicar que el jugador quiere ver su rol
-     */
     verRol() {
       this.$emit('verRol');
     },
-
-    /**
-     * emite un evento para pasar al siguiente jugador
-     */
     siguiente() {
       this.$emit('siguiente');
     },
@@ -34,11 +26,9 @@ export default {
 </script>
 
 <template>
-  <div class="seccion">
-    <!-- DEBUG -->
+  <div class="rolesFase">
     <p v-if="false">
-      DEBUG: viendoRol={{ viendoRol }}, indiceActual={{ indiceActual }},
-      indiceInicio={{ indiceInicio }}, horario={{ horario }}
+      DEBUG: viendoRol={{ viendoRol }}, indiceActual={{ indiceActual }}
     </p>
 
     <template v-if="viendoRol !== indiceActual">
@@ -46,11 +36,11 @@ export default {
       <p class="contador">
         Jugador {{ indiceActual + 1 }} de {{ jugadores.length }}
       </p>
-      <div class="panelTurno">
+      <div class="turnoJugador">
         <p>Es el turno de:</p>
         <h3 class="nombreJugador">{{ jugadores[indiceActual] }}</h3>
         <p class="instruccion">Pulsa para ver tu rol en secreto</p>
-        <button class="boton botonGrande" @click="verRol()">Ver mi rol</button>
+        <button class="botonVerRol" @click="verRol()">Ver mi rol</button>
       </div>
     </template>
 
@@ -76,27 +66,22 @@ export default {
           Tu palabra: <span>{{ palabra?.palabra }}</span>
         </p>
       </div>
-      <button
-        class="boton botonSiguiente botonGrande botonAncho"
-        @click="siguiente"
-      >
-        Siguiente
-      </button>
+      <button class="botonSiguiente" @click="siguiente">Siguiente</button>
     </template>
   </div>
 </template>
 
 <style scoped>
-.seccion {
-  background: #ffffff;
+.rolesFase {
+  background: white;
   padding: 1.5rem;
   border-radius: 12px;
-  color: #333333;
+  color: black;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-.seccion h2 {
+.rolesFase h2 {
   color: #4a6fa5;
   margin-bottom: 1rem;
   font-size: 1.5rem;
@@ -108,7 +93,7 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-.panelTurno {
+.turnoJugador {
   text-align: center;
   padding: 1.5rem;
   background: #f5f5f5;
@@ -128,34 +113,26 @@ export default {
   margin: 0.75rem 0;
 }
 
-.boton {
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
+.botonVerRol {
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
   border: none;
   border-radius: 8px;
   background: #4a6fa5;
   color: white;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-}
-
-.boton:hover:not(:disabled) {
-  background: #3a5a80;
-  transform: translateY(-2px);
-}
-
-.botonGrande {
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
 }
 
 .botonSiguiente {
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
   background: #5cb85c;
-  margin-top: 1rem;
-}
-
-.botonAncho {
+  color: white;
+  cursor: pointer;
   width: 100%;
+  margin-top: 1rem;
 }
 
 .tarjetaImpostor {

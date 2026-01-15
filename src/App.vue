@@ -374,7 +374,7 @@ export default {
 </script>
 
 <template>
-  <div class="juego">
+  <div class="app">
     <h1>Juego del Impostor</h1>
 
     <ConfigFase
@@ -457,6 +457,7 @@ export default {
       :palabra="palabra"
       @reiniciar="reiniciarPartida"
     />
+
     <VictoriaImpostor
       v-if="fase === 'victoriaImpostor'"
       :jugadores="jugadores"
@@ -468,7 +469,7 @@ export default {
 </template>
 
 <style scoped>
-.juego {
+.app {
   max-width: 560px;
   margin: 2rem auto;
   padding: 2rem;
@@ -479,18 +480,18 @@ export default {
   min-height: 100vh;
 }
 
-.juego h1 {
+.app h1 {
   margin-bottom: 1.5rem;
   font-size: 1.75rem;
   text-align: center;
 }
 
 @media (max-width: 480px) {
-  .juego {
+  .app {
     margin: 1rem;
     padding: 1rem;
   }
-  .juego h1 {
+  .app h1 {
     font-size: 1.4rem;
   }
 }
